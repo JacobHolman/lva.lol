@@ -1,0 +1,2 @@
+sam package --template-file template.yaml --output-template-file packaged-template.yaml --s3-bucket lva.lol-sam
+sam deploy --template-file packaged-template.yaml --stack-name LinkShortenerStack --capabilities CAPABILITY_IAM

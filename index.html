@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <title>lva.lol</title>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="max-w-md mx-auto p-4 bg-white rounded-lg shadow-md">
+        <form id="linkForm" class="mb-4">
+            <input
+                type="text"
+                id="inputUrl"
+                placeholder="Enter URL"
+                class="w-full p-2 border rounded-lg"
+            />
+            <button type="submit" class="mt-2 bg-blue-500 text-white p-2 rounded-lg w-full">
+                Shorten
+            </button>
+        </form>
+        <div id="shortenedUrlContainer" class="hidden">
+            <p class="mb-2">Shortened URL:</p>
+            <a id="shortenedUrl" href="#" target="_blank" rel="noopener noreferrer" class="text-blue-500"></a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const linkForm = document.getElementById('linkForm');
+            const inputUrl = document.getElementById('inputUrl');
+            const shortenedUrlContainer = document.getElementById('shortenedUrlContainer');
+            const shortenedUrl = document.getElementById('shortenedUrl');
+    
+            linkForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+    
+                try {
+                    const response = await fetch('https://lva.lol/shorten', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ url: inputUrl.value }),
+                    });
+    
+                    if (response.ok) {
+                        try {
+                            const shortenedUrlText = await response.text();
+                            shortenedUrl.href = shortenedUrlText;
+                            shortenedUrl.textContent = shortenedUrlText;
+                            shortenedUrlContainer.style.display = 'block';
+                        } catch (error) {
+                            console.error('Error:', error);
+                        }
+                    } else {
+                        console.error('Error:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

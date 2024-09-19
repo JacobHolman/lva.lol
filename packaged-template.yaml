@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: URL Shortener Lambda Function
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: python3.11
+Resources:
+  ShortenUrlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.shorten_url
+      Events:
+        ShortenUrl:
+          Type: Api
+          Properties:
+            Path: /shorten
+            Method: POST
+      CodeUri: s3://lva.lol-sam/4912f0f978bf3ebbc7ef9edee742d8c8
+    Metadata:
+      SamResourceId: ShortenUrlFunction
+  RedirectUrlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.redirect_url
+      Events:
+        RedirectUrl:
+          Type: Api
+          Properties:
+            Path: /{short_url}
+            Method: GET
+      CodeUri: s3://lva.lol-sam/4912f0f978bf3ebbc7ef9edee742d8c8
+    Metadata:
+      SamResourceId: RedirectUrlFunction
+Outputs:
+  ShortenUrlFunctionArn:
+    Description: ARN of the ShortenUrl Lambda Function
+    Value:
+      Fn::GetAtt:
+      - ShortenUrlFunction
+      - Arn
+  RedirectUrlFunctionArn:
+    Description: ARN of the RedirectUrl Lambda Function
+    Value:
+      Fn::GetAtt:
+      - RedirectUrlFunction
+      - Arn
